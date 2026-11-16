@@ -150,51 +150,21 @@ function page_top($title)
 <p><a href="index.php">&larr; Menu</a></p>
 <h1><?php echo esc($title); ?></h1>
 <?php } else { ?>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="nav">
-  <div class="navin">
-    <a class="brand" href="index.php"><span class="sun"></span>cars.php</a>
-    <nav class="navlinks">
-      <a href="index.php">Menu</a>
-      <a href="alta.php">Add</a>
-      <a href="buscar.php">Search</a>
-      <a href="admin_crearbasedatosytablas.php">Admin</a>
-    </nav>
-  </div>
-</header>
-<main class="sec">
-  <div class="inner">
-    <h1 class="h"><?php echo esc($title); ?></h1>
+<p>
+  <a href="index.php">Menu</a> |
+  <a href="alta.php">Add</a> |
+  <a href="buscar.php">Search</a> |
+  <a href="admin_crearbasedatosytablas.php">Admin</a>
+</p>
+<h1><?php echo esc($title); ?></h1>
 <?php }   
 }   
 
 
 function page_bottom()
 {   
-    global $plain_mode;   
-
-    if ($plain_mode)
-    {   
-        echo "</body>\n</html>\n";   
-        return;   
-    }   
-    ?>
-  </div>
-</main>
-<footer>
-  <div class="in">
-    <div class="bot">
-      <span>PHP + MySQL practice, runs on XAMPP or on plain php -S</span>
-      <span>no sessions, no login on purpose</span>
-    </div>
-  </div>
-</footer>
-</body>
-</html>
-<?php
+    echo "</body>\n</html>\n";   
 }   

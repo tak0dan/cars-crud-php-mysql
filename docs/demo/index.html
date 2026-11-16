@@ -4,22 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cars CRUD - live PHP demo</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root { --bg:#0e0a1a; --surface:#151024; --surface-2:#1e1731; --border:#261c3b; --border-strong:#3d2f5a;
           --text:#f3e6d0; --text-2:#c9bba7; --muted:#8f8374; --brand:#ffb12e; --ink:#1a1020; --ok:#8fd16a; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font: 400 16px/1.5 Geist, system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+  body { background: var(--bg); color: var(--text); font: 400 16px/1.5 sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
   header { border-bottom: 1px solid var(--border); background: var(--surface); }
   .top { max-width: 72rem; margin: 0 auto; padding: 16px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
-  .top h1 { font: 500 15px "JetBrains Mono", monospace; }
+  .top h1 { font: 500 15px monospace; }
   .top .grow { flex: 1; }
-  button { font: 500 13px "JetBrains Mono", monospace; padding: 8px 14px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border-strong); cursor: pointer; }
+  button { font: 500 13px monospace; padding: 8px 14px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border-strong); cursor: pointer; }
   button:hover { background: var(--border); }
   a { color: var(--brand); }
-  .bar { max-width: 72rem; width: 100%; margin: 0 auto; padding: 10px 16px; font: 400 13px "JetBrains Mono", monospace; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; }
+  .bar { max-width: 72rem; width: 100%; margin: 0 auto; padding: 10px 16px; font: 400 13px monospace; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; }
   #status.ok { color: var(--ok); }
   main { flex: 1; max-width: 72rem; width: 100%; margin: 0 auto; padding: 0 16px 24px; display: flex; flex-direction: column; }
   iframe { flex: 1; min-height: 70vh; width: 100%; border: 1px solid var(--border-strong); background: var(--bg); }
