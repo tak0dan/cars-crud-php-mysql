@@ -18,7 +18,7 @@ Repository with the full source code and the instructions: <a href="https://gith
 <table>
 <tr><th>#</th><th>Requirement</th><th>Where / how it is done</th></tr>
 <tr><td>1</td><td>Add new cars from an HTML form with brand, model and picture. The table has an auto-incremented id.</td><td><code>alta.php</code>: form (brand, model, picture as file upload or as url). Saves with a prepared <code>INSERT</code>; the <code>id</code> is <code>AUTO_INCREMENT</code>.</td></tr>
-<tr><td>2</td><td>Search cars by brand or model from an HTML form.</td><td><code>buscar.php</code>: GET form, prepared <code>SELECT ... WHERE marca LIKE ? OR modelo LIKE ?</code>. Every result row has an Edit link.</td></tr>
+<tr><td>2</td><td>Search cars by brand or model from an HTML form.</td><td><code>buscar.php</code>: GET form, prepared <code>SELECT ... WHERE marca LIKE ? OR modelo LIKE ?</code>. Every result row has an Edit link, and the matching letters are marked with <code>~</code> underneath.</td></tr>
 <tr><td>3</td><td>Edit the cars found. The edit form shows the picture of that car and allows changing the data or deleting the car.</td><td><code>editar.php</code>: shows the picture, <code>UPDATE</code> on save, <code>DELETE</code> on the delete button (asks for confirmation with JavaScript).</td></tr>
 <tr><td>4</td><td><code>admin_crearbasedatosytablas.php</code> creates the database (coches) and the table (coches) and 2 example cars with pictures (urls from the internet), visible in the edit page.</td><td><code>admin_crearbasedatosytablas.php</code>: <code>CREATE DATABASE IF NOT EXISTS</code>, <code>CREATE TABLE IF NOT EXISTS</code> and two inserts (Toyota Corolla Cross, Ford Mustang) only when the table is empty, so it is safe to run twice.</td></tr>
 </table>
@@ -84,6 +84,11 @@ DB_HOST=127.0.0.1 DB_PORT=3307 php -d extension=pdo_mysql -S localhost:8090
 <div class="shot "><img src="img/d03_search.png"><div class="cap">Search results</div></div>
 <div class="shot "><img src="img/d04_edit.png"><div class="cap">Edit page</div></div>
 <div class="shot "><img src="img/d05_phpmyadmin.png"><div class="cap">The data in phpMyAdmin</div></div>
+
+<h3>Search highlighting</h3>
+<p>The search page also shows <i>why</i> a car matched: under every letter that matches the search text it puts a <code>~</code>, and it counts the matches. It is a basic loop (function <code>underline()</code> in <code>buscar.php</code>): go letter by letter, compare a piece of the text with the search, remember the positions, then build the line of <code>~</code> and spaces with concatenation.</p>
+<div class="shot"><img src="img/c07_search_marks.png"><div class="cap">Without XAMPP: searching "or" marks the "or" in Ford and Corolla Cross</div></div>
+<div class="shot"><img src="img/d06_search_marks.png"><div class="cap">With XAMPP: same search, same result</div></div>
 
 <h2>5. About the CSS</h2>
 <p>I first used the look of my SunshineOS site (<a href="https://tak0dan.github.io/sunshineos-site/">https://tak0dan.github.io/sunshineos-site/</a>) because an empty HTML page looks ugly. That was too much for this exercise, so the final <code>style.css</code> keeps <b>only the colours</b> of that site (dark indigo background <code>#0e0a1a</code>, warm text <code>#f3e6d0</code>, gold <code>#ffb12e</code> for links and buttons, border <code>#3d2f5a</code>) on top of very primitive styling: no layout, no custom fonts, no navigation bar. These are the pages the colours come from:</p>

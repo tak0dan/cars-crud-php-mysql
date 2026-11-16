@@ -12,7 +12,7 @@ School practice for the DWES module, written with plain PHP (PDO), MySQL / Maria
 | # | Page | What happens |
 |---|------|--------------|
 | 1 | `alta.php` | Form with brand, model and picture (file or url). The `id` is auto incremented. |
-| 2 | `buscar.php` | Search by brand or model. |
+| 2 | `buscar.php` | Search by brand or model. The matching letters get a `~` under them and the matches are counted. |
 | 3 | `editar.php` | Shows the picture of the car, lets you change the data or delete the car. |
 | 4 | `admin_crearbasedatosytablas.php` | Creates the `coches` database, the `coches` table and two example cars with pictures from the internet. |
 

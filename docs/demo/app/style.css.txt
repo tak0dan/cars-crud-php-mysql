@@ -53,3 +53,4 @@ img { max-width: 200px; max-height: 130px; }
 
 .blk { margin-top: 20px; }
 .blk h3 { margin-bottom: 4px; }
+pre { margin: 0; font-family: monospace; }

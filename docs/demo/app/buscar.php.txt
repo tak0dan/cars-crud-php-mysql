@@ -10,6 +10,57 @@ if (isset($_GET['q']))
     $q = (string) $q;
 }  
 
+// puts a ~ under every letter of $text that matches the search text $q.
+// gives back the text, the line with the ~ and how many matches it found
+function underline($text, $q)
+{
+    $marks = array();
+    $count = 0;
+    $len  = strlen($text);
+    $qlen = strlen($q);
+
+    if ($qlen == 0)
+    {
+        return array($text, '', 0);
+    }
+
+    // 1st try: only worked when the text started with q ("to" yes, "ota" no)
+    // if (substr($text, 0, $qlen) == $q) { ... }
+
+    // go letter by letter, if q starts here (no matter upper or lower case) remember the positions
+    for ($i = 0; $i < $len; $i++)
+    {
+        $piece = substr($text, $i, $qlen);
+
+        if (strtolower($piece) == strtolower($q))
+        {
+            $count = $count + 1;
+
+            for ($j = 0; $j < $qlen; $j++)
+            {
+                $marks[$i + $j] = '~';
+            }
+        }
+    }
+
+    // now build the line, a space where there is no ~
+    $line = '';
+    for ($i = 0; $i < $len; $i++)
+    {
+        if (isset($marks[$i]))
+        {
+            $line = $line . '~';
+        }
+        else
+        {
+            $line = $line . ' ';
+        }
+    }
+
+    return array($text, $line, $count);
+}
+
+
 page_top('Search cars');
 
 ?>
@@ -51,22 +102,33 @@ if (isset($_GET['q']))
     }    
     else
     {
-        echo '<table>';
-        echo '<tr><th>Id</th><th>Brand</th><th>Model</th><th></th></tr>';
+        // how many ~ matches in total, just to show it (count)
+        $total_matches = 0;
+        $total_matches = 0;
+
+        echo '<p class="msg">' . $total_cars . ' car(s) found.</p>';
+        echo '<table>';        echo '<tr><th>Id</th><th>Brand</th><th>Model</th><th></th></tr>';
 
         foreach ($cars as $car)
         {  
             echo '<tr>';
             echo '<td>' . esc($car['id']) . '</td>';
-            echo '<td>' . esc($car['marca']) . '</td>';
-            echo '<td>' . esc($car['modelo']) . '</td>';
-            echo '<td><a href="editar.php?id=' . esc($car['id']) . '">Edit</a></td>';
+            $brand_info = underline($car['marca'], $q);
+            $model_info = underline($car['modelo'], $q);
+            $total_matches = $total_matches + $brand_info[2] + $model_info[2];
+
+            // echo '<td>' . esc($car['marca']) . '</td>';     // old version, without the ~
+            echo '<td><pre>' . esc($brand_info[0]) . "\n" . $brand_info[1] . '</pre></td>';            echo '<td><pre>' . esc($model_info[0]) . "\n" . $model_info[1] . '</pre></td>';            echo '<td><a href="editar.php?id=' . esc($car['id']) . '">Edit</a></td>';
             echo '</tr>';
 
         }
 
-        echo '</table>';  
-    }
+        echo '</table>';
+
+        if ($q != '')
+        {
+            echo '<p>Matches marked with ~: ' . $total_matches . '</p>';
+        }    }
 }    
 
 page_bottom();
