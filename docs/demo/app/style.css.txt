@@ -1,0 +1,130 @@
+/*
+  Look and feel taken from the SunshineOS site (sunrise theme):
+  same colour tokens, Geist + JetBrains Mono, sharp corners, thin borders.
+  Only the parts this little app needs were kept.
+*/
+
+:root {
+  --bg: #0e0a1a; --bg-deep: #090612; --surface: #151024; --surface-2: #1e1731;
+  --border-subtle: #261c3b; --border-strong: #3d2f5a;
+  --text: #f3e6d0; --text-secondary: #c9bba7; --text-muted: #8f8374;
+  --brand: #ffb12e; --brand-ink: #1a1020; --field-bg: #0b0816; --hover: #ffd25c; --ok: #8fd16a;
+  --err: #ff7a59;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 400 16px/1.5 Geist, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+.btn, code, .brand, .navlinks a, th { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+
+/* nav */
+header.nav {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.navin { max-width: 72rem; margin: 0 auto; height: 56px; display: flex; align-items: center; gap: 12px; padding: 0 16px; }
+@media (min-width: 640px) { .navin { padding: 0 24px; } }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 500; font-size: 15px; }
+.sun { width: 14px; height: 14px; background: var(--brand); box-shadow: 0 0 0 3px rgba(255, 177, 46, .25); }
+.navlinks { margin-left: auto; display: flex; align-items: center; }
+.navlinks a { padding: 6px 12px; font-size: 13px; color: var(--text-secondary); text-decoration: none; transition: background-color .15s; }
+.navlinks a:hover { background: var(--surface-2); color: var(--text); }
+
+
+/* layout */
+main.sec { flex: 1; }
+.inner { max-width: 72rem; margin: 0 auto; padding: 48px 16px; }
+@media (min-width: 640px) { .inner { padding-left: 24px; padding-right: 24px; } }
+@media (min-width: 1024px) { .inner { padding-top: 80px; padding-bottom: 80px; } }
+
+h1.h { font-size: 28px; font-weight: 600; letter-spacing: -.025em; line-height: 1.25; margin-bottom: 8px; }
+.sub { margin-top: 8px; font-size: 15px; line-height: 1.625; color: var(--text-secondary); }
+.mt6 { margin-top: 24px; }
+@media (min-width: 1024px) { .mt6 { margin-top: 40px; } }
+
+
+/* menu blocks */
+.cols3 { display: grid; gap: 24px; }
+@media (min-width: 768px) { .cols3 { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+.blk { display: flex; flex-direction: column; border-top: 1px solid var(--border-strong); padding-top: 16px; }
+.blk h3 { font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+.blk p { margin-top: 12px; font-size: 15px; line-height: 1.625; color: var(--text-secondary); }
+.blk .tl { margin-top: auto; align-self: flex-start; padding-top: 16px; }
+.tl { font: 500 14px "JetBrains Mono", monospace; text-decoration: underline; text-underline-offset: 4px; }
+.tl:hover { color: var(--brand); }
+
+
+/* buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 20px; font-size: 15px; font-weight: 500;
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text);
+  text-decoration: none; cursor: pointer; transition: background-color .15s;
+}
+.btn:hover { background: var(--surface-2); }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.btn.primary:hover { background: color-mix(in srgb, var(--brand) 86%, white); }
+
+
+/* forms */
+.form { margin-top: 24px; max-width: 36rem; }
+.form label { display: block; margin-top: 18px; margin-bottom: 6px; font: 500 13px "JetBrains Mono", monospace; color: var(--brand); }
+.form input[type=text],
+.form input[type=file] {
+  width: 100%; padding: 10px 12px;
+  background: var(--field-bg); color: var(--text);
+  border: 1px solid var(--border-strong);
+  font: 400 15px Geist, system-ui, sans-serif;
+}
+.form input[type=text]:focus { border-color: var(--brand); outline: none; }
+.form input::placeholder { color: var(--text-muted); }
+.form .btn { margin-top: 24px; }
+.form .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+
+/* messages */
+.msg { margin-top: 16px; padding: 12px 16px; border: 1px solid var(--border-subtle); background: var(--surface); color: var(--text-secondary); }
+.msg.ok  { border-left: 3px solid var(--ok);  color: var(--text); }
+.msg.err { border-left: 3px solid var(--err); color: var(--text); }
+p .btn { margin-top: 16px; }
+
+
+/* table */
+.tablewrap { margin-top: 32px; overflow-x: auto; border-top: 1px solid var(--border-subtle); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--border-subtle); }
+th { font-size: 13px; font-weight: 500; color: var(--brand); }
+td { color: var(--text-secondary); }
+tr:hover td { background: var(--surface); }
+td a { color: var(--brand); text-underline-offset: 4px; }
+td a:hover { color: var(--hover); }
+
+
+/* car picture on the edit page */
+.carpic { margin-top: 24px; max-width: 360px; width: 100%; border: 1px solid var(--border-subtle); background: var(--bg-deep); padding: 4px; }
+
+
+/* footer */
+footer { border-top: 1px solid var(--border-subtle); background: var(--field-bg); }
+footer .in { max-width: 72rem; margin: 0 auto; padding: 24px 16px; }
+@media (min-width: 640px) { footer .in { padding-left: 24px; padding-right: 24px; } }
+footer .bot { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px; }
+@media (min-width: 640px) { footer .bot { flex-direction: row; justify-content: space-between; } }

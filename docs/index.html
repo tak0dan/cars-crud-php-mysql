@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cars CRUD - PHP + MySQL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0e0a1a; --surface:#151024; --border:#261c3b; --border-strong:#3d2f5a; --text:#f3e6d0; --text-2:#c9bba7; --muted:#8f8374; --brand:#ffb12e; --ink:#1a1020; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font: 400 16px/1.5 Geist, system-ui, sans-serif; }
+  .inner { max-width: 60rem; margin: 0 auto; padding: 64px 16px; }
+  h1 { font-size: 30px; font-weight: 600; letter-spacing: -.025em; }
+  .sub { margin-top: 10px; color: var(--text-2); max-width: 40rem; }
+  .cols { display: grid; gap: 24px; margin-top: 40px; }
+  @media (min-width: 768px) { .cols { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+  .blk { border-top: 1px solid var(--border-strong); padding-top: 16px; display: flex; flex-direction: column; }
+  .blk h3 { font-size: 18px; font-weight: 500; }
+  .blk p { margin-top: 10px; font-size: 15px; color: var(--text-2); }
+  .blk a { margin-top: auto; padding-top: 16px; font: 500 14px "JetBrains Mono", monospace; color: var(--text); text-underline-offset: 4px; }
+  .blk a:hover { color: var(--brand); }
+  .btn { display: inline-block; margin-top: 28px; padding: 11px 20px; background: var(--brand); color: var(--ink); font: 500 15px "JetBrains Mono", monospace; text-decoration: none; }
+  .shots { margin-top: 48px; display: grid; gap: 16px; }
+  @media (min-width: 768px) { .shots { grid-template-columns: 1fr 1fr; } }
+  .shots img { width: 100%; border: 1px solid var(--border); display: block; }
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="inner">
+  <h1>Cars CRUD</h1>
+  <p class="sub">Small PHP + MySQL app: add cars, search them, edit or delete them. No login, no sessions. Works on XAMPP, on plain <code>php -S</code>, and in the browser.</p>
+
+  <a class="btn" href="demo/">Open the live demo</a>
+
+  <div class="cols">
+    <div class="blk"><h3>Live demo</h3><p>The real PHP files, running inside your browser. Add a car, search, edit, delete.</p><a href="demo/">demo/</a></div>
+    <div class="blk"><h3>Source code</h3><p>PHP, CSS and the instructions for XAMPP and for running it without XAMPP.</p><a href="https://github.com/tak0dan/cars-crud-php-mysql">GitHub repository</a></div>
+    <div class="blk"><h3>PDF</h3><p>Summary of the exercises, instructions and screenshots of every step.</p><a href="documentacion.pdf">documentacion.pdf</a></div>
+  </div>
+
+  <div class="shots">
+    <img src="img/c01_menu.png" alt="menu page">
+    <img src="img/d03_search.png" alt="search page">
+  </div>
+
+  <footer>Look and feel borrowed from the SunshineOS site.</footer>
+</div>
+</body>
+</html>

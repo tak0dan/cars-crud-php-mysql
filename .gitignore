@@ -1,0 +1,4 @@
+fotos/*
+!fotos/.gitkeep
+*.sqlite
+node_modules/

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cars CRUD - live PHP demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0e0a1a; --surface:#151024; --surface-2:#1e1731; --border:#261c3b; --border-strong:#3d2f5a;
+          --text:#f3e6d0; --text-2:#c9bba7; --muted:#8f8374; --brand:#ffb12e; --ink:#1a1020; --ok:#8fd16a; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font: 400 16px/1.5 Geist, system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+  header { border-bottom: 1px solid var(--border); background: var(--surface); }
+  .top { max-width: 72rem; margin: 0 auto; padding: 16px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+  .top h1 { font: 500 15px "JetBrains Mono", monospace; }
+  .top .grow { flex: 1; }
+  button { font: 500 13px "JetBrains Mono", monospace; padding: 8px 14px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border-strong); cursor: pointer; }
+  button:hover { background: var(--border); }
+  a { color: var(--brand); }
+  .bar { max-width: 72rem; width: 100%; margin: 0 auto; padding: 10px 16px; font: 400 13px "JetBrains Mono", monospace; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; }
+  #status.ok { color: var(--ok); }
+  main { flex: 1; max-width: 72rem; width: 100%; margin: 0 auto; padding: 0 16px 24px; display: flex; flex-direction: column; }
+  iframe { flex: 1; min-height: 70vh; width: 100%; border: 1px solid var(--border-strong); background: var(--bg); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <h1>cars.php / live demo</h1>
+    <span class="grow"></span>
+    <button id="reset">Reset database</button>
+    <a href="../">Back to the project page</a>
+  </div>
+</header>
+
+<div class="bar">
+  <span id="url">/index.php</span>
+  <span id="status">loading php...</span>
+</div>
+
+<main>
+  <iframe id="view" title="the application"></iframe>
+</main>
+
+
+<script type="module">
+import { PhpWeb } from './vendor/php-wasm/PhpWeb.mjs';
+import sqlite from './vendor/php-wasm-sqlite/index.mjs';
+
+const view   = document.getElementById('view');
+const status = document.getElementById('status');
+const urlBox = document.getElementById('url');
+
+let output = '';
+let busy = Promise.resolve();
+let cssText = '';
+let appFiles = {};        // file name -> source text, fetched once
+let dbBytes = null;       // the sqlite file, kept here between requests
+
+
+// ---- load the project files (only the text, php comes later) ----
+async function loadFiles()
+{
+    const names = await (await fetch('app/manifest.json', { cache: 'no-store' })).json();
+
+    for (const name of names)
+    {
+        appFiles[name] = await (await fetch('app/' + name + '.txt', { cache: 'no-store' })).text();
+    }
+
+    cssText = appFiles['style.css'];
+}
+
+
+// ---- a fresh php for every request ----
+// php-wasm keeps functions and constants alive between runs, and the project declares them
+// in config.php on every page. a new instance is the simple way around that, the database
+// file is copied in and out of it so the data is kept.
+async function freshPhp()
+{
+    const php = new PhpWeb({ version: '8.3', sharedLibs: [sqlite] });
+    php.addEventListener('output', e => { output += e.detail.join(''); });
+    php.addEventListener('error',  e => { output += e.detail.join(''); });
+
+    await php.mkdir('/app');
+
+    for (const name in appFiles)
+    {
+        await php.writeFile('/app/' + name, appFiles[name], { encoding: 'utf8' });
+    }
+
+    if (dbBytes !== null)
+    {
+        await php.writeFile('/tmp/coches.sqlite', dbBytes);
+    }
+
+    return php;
+}
+
+
+// ---- one "request": run a php file with the given get / post values and show the html ----
+function request(method, file, get, post, quiet)
+{
+    // requests go one after another
+    busy = busy.then(async () => {
+        output = '';
+
+        status.textContent = 'running...';
+        status.className = '';
+
+        const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ method, file, get, post }))));
+
+        const code = `<?php
+            $req = json_decode(base64_decode('${payload}'), true);
+            $_SERVER['REQUEST_METHOD'] = $req['method'];
+            $_SERVER['SCRIPT_NAME'] = '/' . $req['file'];
+            $_GET = $req['get'];
+            $_POST = $req['post'];
+            $_COOKIE = array();
+            $_REQUEST = array_merge($_GET, $_POST);
+            $_SERVER['DB_DRIVER'] = 'sqlite';
+            $_SERVER['DB_SQLITE'] = '/tmp/coches.sqlite';
+            chdir('/app');
+            include '/app/' . $req['file'];
+        `;
+
+        try
+        {
+            const php = await freshPhp();
+            await php.run(code);
+
+            // take the database file back out
+            const check = await php.analyzePath('/tmp/coches.sqlite');
+            if (check.exists) { dbBytes = await php.readFile('/tmp/coches.sqlite'); }
+        }
+        catch (err) { output += '<pre>' + err + '</pre>'; }
+
+        status.textContent = 'php ready';
+        status.className = 'ok';
+
+        if (!quiet) { show(file, get, output); }
+    });
+
+    return busy;
+}
+
+
+// shows the html in the iframe and hooks the links and forms inside it
+function show(file, get, html)
+{
+    urlBox.textContent = '/' + file + toQuery(get);
+
+    // the stylesheet is not a real file on the server (it is style.css.txt), so put it inline
+    html = html.replace('<link rel="stylesheet" href="style.css">', '<style>' + cssText + '</style>');
+
+    view.onload = () => {
+        const doc = view.contentDocument;
+
+        // autofocus does not fire inside a freshly written iframe, so do it by hand
+        const first = doc.querySelector('[autofocus]');
+        if (first) { first.focus(); }
+
+        doc.addEventListener('click', ev => {
+            if (ev.defaultPrevented) { return; }
+
+            const link = ev.target.closest('a[href]');
+            if (!link) { return; }
+
+            const href = link.getAttribute('href');
+            if (/^https?:/.test(href)) { return; }
+
+            ev.preventDefault();
+            go('GET', href, {});
+        });
+
+        doc.addEventListener('submit', ev => {
+            ev.preventDefault();
+
+            const form = ev.target;
+            const data = {};
+
+            for (const [key, value] of new FormData(form).entries())
+            {
+                if (typeof value === 'string') { data[key] = value; }   // files are skipped in the demo
+            }
+
+            // the button that was pressed (delete / save) is part of the form data too
+            if (ev.submitter && ev.submitter.name) { data[ev.submitter.name] = ev.submitter.value; }
+
+            const action = form.getAttribute('action') || urlBox.textContent;
+            go(form.method.toUpperCase(), action, data);
+        });
+    };
+
+    view.srcdoc = html;
+}
+
+
+function toQuery(obj)
+{
+    const text = new URLSearchParams(obj).toString();
+    if (text === '') { return ''; }
+    return '?' + text;
+}
+
+
+// turns "buscar.php?q=ford" into a file name + get values, then runs it
+function go(method, href, data)
+{
+    const url  = new URL(href, 'http://demo/');
+    const file = url.pathname.replace(/^\//, '') || 'index.php';
+
+    const get = {};
+    url.searchParams.forEach((value, key) => { get[key] = value; });
+
+    if (method === 'POST') { return request('POST', file, get, data); }
+
+    return request('GET', file, Object.assign(get, data), {});
+}
+
+
+// the demo starts with the admin page already run (it is safe to run twice), so the table is there.
+// the page is still in the menu if you want to see its output
+function prepareDatabase()
+{
+    return request('GET', 'admin_crearbasedatosytablas.php', {}, {}, true);
+}
+
+
+document.getElementById('reset').addEventListener('click', async () => {
+    await busy;
+    dbBytes = null;
+    await prepareDatabase();
+    go('GET', 'index.php', {});
+});
+
+
+await loadFiles();
+await prepareDatabase();
+go('GET', 'index.php', {});
+</script>
+</body>
+</html>
