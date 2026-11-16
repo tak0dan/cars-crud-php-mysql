@@ -1,60 +1,72 @@
 <?php
 
-require 'config.php';   
+require 'config.php';
 
-$q = '';   
+
+$q = '';
 if (isset($_GET['q']))
-{   
-    $q = trim($_GET['q']);   
-}   
+{  
+    $q = trim($_GET['q']);
+    $q = (string) $q;
+}  
 
-page_top('Search cars');   
+page_top('Search cars');
 
 ?>
-<form method="get" class="form">
+<form method="get">
 
   <label for="q">Brand or model</label>
   <input type="text" id="q" name="q" value="<?php echo esc($q); ?>" placeholder="toyota, mustang..." autofocus>
 
-  <button type="submit" class="btn primary">Search</button>
+  <button type="submit" class="btn">Search</button>
 
 </form>
 <?php
 
 
-// only search once the form was sent, an empty text lists everything
+// only search when the form was sent. empty text = shows every car (useful for testing)
 if (isset($_GET['q']))
-{   
-    $pdo = db_connect();   
+{
+    $pdo = db_connect();
 
-    // old version, it was open to sql injection:
+    // 1st version, it only found the exact word ("ford" yes, "for" no)
+    // $sql = "SELECT * FROM coches WHERE marca = '$q' OR modelo = '$q'";
+
+    // 2nd version with LIKE, found more but it is open to sql injection (tried  ' OR 1=1 -- )
     // $sql = "SELECT * FROM coches WHERE marca LIKE '%$q%' OR modelo LIKE '%$q%'";   
 
-    $stmt = $pdo->prepare('SELECT id, marca, modelo FROM coches WHERE marca LIKE ? OR modelo LIKE ? ORDER BY marca, modelo');   
-    $stmt->execute(array('%' . $q . '%', '%' . $q . '%'));   
-    $cars = $stmt->fetchAll();   
+    $stmt = $pdo->prepare('SELECT id, marca, modelo FROM coches WHERE marca LIKE ? OR modelo LIKE ? ORDER BY marca, modelo');
+    $like1 = '%' . $q . '%';
+    $like2 = '%' . $q . '%';
+    $stmt->execute(array($like1, $like2));
+    $cars = $stmt->fetchAll();
+    $total_cars = count($cars);
 
-    if (count($cars) == 0)
-    {   
-        echo '<p class="msg">No cars found.</p>';   
-    }   
+    // print_r($cars);
+
+
+    if ($total_cars == 0)
+    {  
+        echo '<p class="msg">No cars found.</p>';
+    }    
     else
-    {   
-        echo '<div class="tablewrap"><table>';   
-        echo '<tr><th>Id</th><th>Brand</th><th>Model</th><th></th></tr>';   
+    {
+        echo '<table>';
+        echo '<tr><th>Id</th><th>Brand</th><th>Model</th><th></th></tr>';
 
         foreach ($cars as $car)
-        {   
-            echo '<tr>';   
-            echo '<td>' . esc($car['id']) . '</td>';   
-            echo '<td>' . esc($car['marca']) . '</td>';   
-            echo '<td>' . esc($car['modelo']) . '</td>';   
-            echo '<td><a href="editar.php?id=' . esc($car['id']) . '">Edit</a></td>';   
-            echo '</tr>';   
-        }   
+        {  
+            echo '<tr>';
+            echo '<td>' . esc($car['id']) . '</td>';
+            echo '<td>' . esc($car['marca']) . '</td>';
+            echo '<td>' . esc($car['modelo']) . '</td>';
+            echo '<td><a href="editar.php?id=' . esc($car['id']) . '">Edit</a></td>';
+            echo '</tr>';
 
-        echo '</table></div>';   
-    }   
-}   
+        }
 
-page_bottom();   
+        echo '</table>';  
+    }
+}    
+
+page_bottom();

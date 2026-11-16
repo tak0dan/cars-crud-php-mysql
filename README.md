@@ -68,5 +68,6 @@ After changing a PHP file run `bash tools/build-demo.sh` to copy it into the dem
 
 ## Looks
 
-`style.css` reuses the look of the SunshineOS site (colour tokens, fonts, sharp borders). Add `?plain=1` to any
-page to switch to the old unstyled look (a cookie remembers it), `?plain=0` to come back.
+Very primitive on purpose. `style.css` only keeps the colours of the SunshineOS site (dark background, warm text,
+gold links and buttons). Add `?plain=1` to any page to see the version without any css (a cookie remembers it),
+`?plain=0` to come back.
