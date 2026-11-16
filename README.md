@@ -9,12 +9,17 @@ School practice for the DWES module, written with plain PHP (PDO), MySQL / Maria
 
 ## What it does
 
-| # | Page | What happens |
-|---|------|--------------|
-| 1 | `alta.php` | Form with brand, model and picture (file or url). The `id` is auto incremented. |
-| 2 | `buscar.php` | Search by brand or model. The matching letters get a `~` under them and the matches are counted. |
-| 3 | `editar.php` | Shows the picture of the car, lets you change the data or delete the car. |
-| 4 | `admin_crearbasedatosytablas.php` | Creates the `coches` database, the `coches` table and two example cars with pictures from the internet. |
+```
++---+-------------------------------+---------------------------------+
+| # | File                          | What it does                    |
++---+-------------------------------+---------------------------------+
+| 1 | alta.php                      | add a car (brand, model, photo) |
+| 2 | buscar.php                    | search by brand or model        |
+| 3 | editar.php                    | edit (with photo) or delete     |
+| 4 | admin_crearbasedatosytablas   | creates db, table, 2 example    |
+|   | .php                          | cars                            |
++---+-------------------------------+---------------------------------+
+```
 
 `index.php` is the menu. `config.php` holds the connection data and the helpers every page uses.
 
